@@ -1,6 +1,6 @@
 # Lenin Pavón Alvarez
 - Número de Cuenta: `319014217`
-- User de Github: @umoqnier
+- User de Github: @LeninPA
 
 ## Pasatiempos
 
