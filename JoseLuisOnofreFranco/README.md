@@ -1,4 +1,4 @@
-# José Luis Onofrea Franco
+# José Luis Onofre Franco
 - Número de cuenta: `420003117`
 - User de Github: @lonofre
 
