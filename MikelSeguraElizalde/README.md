@@ -7,6 +7,6 @@
 
 - Aprender idiomas
 
-## Proyectos en los que he participado y que me enorgullesen 🖤
+## Proyectos en los que he participado y que me enorgullecen 🖤
 
 - Aún ninguno :(
