@@ -3,7 +3,7 @@ Práctica 02 <<Morfología>>
 
 
 """
-# Instalar en_core_web_sm
+
 # Bibliotecas necesarias
 import nltk
 import ssl
@@ -51,6 +51,9 @@ def get_files(lang: str, track: str = "sentence") -> list[str]:
         f"{lang}.{track}.test.gold",
         f"{lang}.{track}.dev",
     ]
+
+
+
 def get_raw_corpus(files: list) -> list:
     """Descarga y concatena los datos de los archivos tsv desde una URL base.
 
@@ -73,6 +76,8 @@ def get_raw_corpus(files: list) -> list:
         response_list = r.text.split("\n")
         result.extend(response_list[:-1])
     return result
+
+
 
 def raw_corpus_to_dataframe(corpus_list: list, lang: str) -> pd.DataFrame:
     """Convierte una lista de datos de corpus en un DataFrame
@@ -106,6 +111,8 @@ def raw_corpus_to_dataframe(corpus_list: list, lang: str) -> pd.DataFrame:
     # df["morph_len"] = df["morph"].apply(lambda x: len(x))
     return df
 
+
+
 def get_corpora() -> pd.DataFrame:
     """Obtiene y combina datos de corpus de diferentes idiomas en un DataFrame
     obteniendo corpora multilingüe
@@ -122,7 +129,14 @@ def get_corpora() -> pd.DataFrame:
         dataframe = raw_corpus_to_dataframe(raw_data, lang)
         corpora = dataframe if corpora.empty else pd.concat([corpora, dataframe], ignore_index=True)
     return corpora
-# Código de la práctica
+
+
+
+"""
+Código de la práctica
+"""
+
+
 
 # CLI
 if __name__ == '__main__':
@@ -151,16 +165,15 @@ if __name__ == '__main__':
     for index, s in sentences.iterrows():
         print("Sentence:")
         print("| " + s["sentence"])
-        # stems_joined = ' '.join(s["stems"])
-        # lemmas_joined = ' '.join(s["lemmas"])
-        # print(f"| Stemmization and lemmatization")
-        table = Table(title = "Stemmization and lemmatization")
+        # Código de tabla de Stemming and lemmatization
+        table = Table(title = "Stemming and lemmatization")
         table.add_column("Word",style="cyan")
         table.add_column("Stem",style="magenta")
         table.add_column("Lemma",style="green")
         for word,stem,lemma in zip(s["words"],s["stems"],s["lemmas"]):
             table.add_row(word, stem, lemma)
         console.print(table)
+        # Código de tabla de morfología por cada palabra
         for word, morph in zip(s["words"],s["morphology"]):
             table_w = Table(title = f"<<{word}>> morphology")
             table_w.add_column("Label",style="cyan")
