@@ -87,7 +87,7 @@ index = random.sample(range(0, len(corpus)), total_sentences) # obtener los índ
 # declaramos el modelo de spacy para inglés
 nlp_en = spacy.load(MODELS["eng"])
 
-cont = 1
+cont = 10
 ps = PorterStemmer()
 
 for i in index:
