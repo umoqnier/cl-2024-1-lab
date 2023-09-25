@@ -16,8 +16,6 @@ Ahora descargamos todo lo necesario con los siguientes comandos
 
 > pip install unidecode
 
-> pip install -U sklearn-crfsuite
-
 > pip install sklearn_crfsuite
 
 > pip install scikit-learn

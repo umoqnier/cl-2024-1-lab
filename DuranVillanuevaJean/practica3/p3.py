@@ -39,10 +39,6 @@ if __name__ == "__main__":
       except SyntaxError:
         print(f"Skipping line: {line.strip()} (not a valid Python list)")
 
-  raw_corpus
-
-  raw_corpus[0]
-
   """Observamos su estructura y el tamaño de este"""
 
   """
@@ -59,16 +55,13 @@ if __name__ == "__main__":
   """
   """
     [['n', 'psd'], ['dó', '1.cpl'], ['phu̱di', 'stem'], 'v']  ----- la palabra es -----> n-dó-phu̱di
-                                                            ----- su etiqueta es ---->     v
+                                                            ----- su etiqueta es ----->     v
 
       ['n', 'psd'], ['dó', '1.cpl'], ['phu̱di', 'stem']      <----- morfologia de la palabra -------
   """
 
-  len(raw_corpus)
 
   """## Feature functions: corpus"""
-
-  raw_corpus[0]
 
   """
   Feature function only take the phrase, where the phrase has words and its tags
@@ -108,7 +101,6 @@ if __name__ == "__main__":
 
   corpus = feature(raw_corpus)
 
-  corpus[1]
 
   """## Feature functions 2: X, y
 
@@ -134,15 +126,11 @@ if __name__ == "__main__":
       Y.append(y)
     return X, Y
 
-  corpus[:5]
 
   """#### Antes que nada, volvemos a codificar cada cadena de X"""
 
   X, Y = divide(corpus[:5])
 
-  X
-
-  Y
 
   """Sí funcionó, ahora hagamoslo con todo el corpus:"""
 
@@ -151,9 +139,6 @@ if __name__ == "__main__":
   from unidecode import unidecode
 
   X, Y = divide(corpus)
-
-  #X_1 = [[[word.encode('unicode_escape').decode('utf-8')] for word in x] for x in X]
-  #X = X_1
 
   Y_1 = []
   for y in Y:
@@ -166,8 +151,6 @@ if __name__ == "__main__":
   y = Y_1
 
   """## Feature functions 3: final_corpus"""
-
-  X
 
   def word_to_features(sent, i):
       word = sent[i][0]
@@ -201,7 +184,6 @@ if __name__ == "__main__":
 
   X = [[word_to_features(sent, i) for i in range(len(sent))] for sent in corpus]
 
-  X[:2]
 
   """## Entrenando modelo"""
 
@@ -229,6 +211,9 @@ if __name__ == "__main__":
   y_test_flat = [label for sent_labels in y_test for label in sent_labels] #verdaderos
   y_pred_flat = [label for sent_labels in y_pred for label in sent_labels] #predecidos
 
+
+
+
   print("################################# METRICAS #################################")
 
   # Evaluate the model
@@ -236,8 +221,6 @@ if __name__ == "__main__":
   print(report)
 
   """## Metricas especificas
-
-
 
   #### Accuracy = $\frac{TP + TN}{TP + TN + FP + FN} = 0.9273709483793517$
   """
