@@ -247,3 +247,11 @@ if __name__ == "__main__":
   print("####################\nF1-score")
   from sklearn.metrics import f1_score
   print(f1_score(y_pred_flat, y_test_flat, average="macro"))
+
+  print("\n\n\n#################### Ejemplo oracion etiquetada (Oracion del conjunto de pruebas) ####################")
+  sentence = X_test[0]
+  string = " ".join([w['word.lower()'] for w in sentence])
+  print(f"\nOración: {string}")
+  prediction = crf.predict([sentence])
+  print(f"\nEtiquetado obtenido (Y-predict): {', '.join(prediction[0])}")
+  print(f"\nEtiquetado correcto (Y-test): {', '.join(y_test[0])}")
