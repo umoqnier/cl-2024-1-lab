@@ -13,12 +13,13 @@ from sklearn_crfsuite import CRF
 from sklearn.model_selection import train_test_split
 # Analisis de resultados
 from sklearn.metrics import *
-import pandas as pd
 from json import loads
 # Reproducibilidad
 import numpy as np
 import random
 from unidecode import unidecode
+from rich.console import Console
+from rich.table import Table
 
 def tone(word):
     for vowel in ["aa","ee","ii","oo","uu"]:
@@ -54,13 +55,15 @@ def word_to_features(word,pos):
     features = {
         'length':       str(len(word)),
         'pos':          str(pos),
-        # 'tone':         tone(word),
+        'tone':         tone(word),
         'glotal_pos':   str(position_of_letter("'", word)),
+        'o_pos':        str(position_of_letter("o", word)),
         'm_pos':        str(position_of_letter("m", word)),
         'n_pos':        str(position_of_letter("n", word)),
         'hiacuten_pos': str(position_of_letter("hín", word)),
         'bi_pos':       str(position_of_letter("bi", word)),
-        # 'unicode_word': unidecode(word)
+        'unicode_word': unidecode(word),
+        'utf-8':        word.encode(encoding = 'UTF-8')
     }
     return features
 # Código de ayudantía
@@ -71,15 +74,13 @@ def sent_to_labels(sent):
     return [label for token, label in sent]
 
 def report(true, predictions):
-    report = classification_report(y_true=true, y_pred=predictions)
-    print(accuracy_score(true, predictions))
-    print(precision_score(true, predictions, average="macro"))
-    print(recall_score(true, predictions, average="macro"))
-    print(f1_score(true, predictions, average="macro"))
-    disp = ConfusionMatrixDisplay.from_predictions(true, predictions)
-    disp.figure_.suptitle("Confusion Matrix")
-    print(f"Confusion matrix:\n{disp.confusion_matrix}")
+    report = classification_report(y_true=true, y_pred=predictions, zero_division=np.nan)
     print(report)
+    print("Accuracy score:", accuracy_score(true, predictions))
+    print("Precision score:", precision_score(true, predictions, average="macro", zero_division=np.nan))
+    print("Recall score:", recall_score(true, predictions, average="macro", zero_division=np.nan))
+    print("f1 score:", f1_score(true, predictions, average="macro"))
+    
     
 def train_crf_model(features, labels, print_results = True):
     # TODO: Corpus to Features
@@ -116,11 +117,7 @@ if __name__ == '__main__':
                 # word, label, features
                 sentence.append([parts_of_word[-1].strip(),word_to_features(word, idx)])
             corpus.append(sentence)
-    # df = pd.DataFrame.from_dict(corpus)
-    
-    # # pd.set_option('display.max_columns', None)
-    # # pd.set_option('display.max_rows', None)
-    # print(df.head())
+
     # Arreglo de features
     X = [[word[1] for word in sentence] for sentence in corpus]
     # Arreglo de etiquetas
@@ -130,12 +127,8 @@ if __name__ == '__main__':
     np.random.seed(random_seed)
     random.seed(random_seed)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_seed)
-    print(len(X_train))
-    print("---")
-    print("---")
-    print("---")
-    print(len(y_train))
-    crf = CRF(algorithm='lbfgs', c1=0.1, c2=0.1, max_iterations=5000, all_possible_transitions=True, verbose=True)
+
+    crf = CRF(algorithm='lbfgs', c1=0.1, c2=0.1, max_iterations=100, all_possible_transitions=True, verbose=True)
     try:
         crf.fit(X_train, y_train)
     except AttributeError as e:
@@ -146,4 +139,13 @@ if __name__ == '__main__':
     y_test_flat = [label for sent_labels in y_test for label in sent_labels]
     y_pred_flat = [label for sent_labels in y_pred for label in sent_labels]
     report(y_test_flat, y_pred_flat)
+    
+    table = Table(title="Ejemplo")
+    table.add_column("Palabra", style="cyan")
+    table.add_column("Real", style="magenta")
+    table.add_column("Predicción", style="green")
+    for idx, x in enumerate(X_test[random_seed]):
+        table.add_row(x['utf-8'].decode(encoding = 'UTF-8'), y_test[random_seed][idx],y_pred[random_seed][idx])
+    console = Console()
+    console.print(table)
     
