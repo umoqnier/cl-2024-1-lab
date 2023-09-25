@@ -1,10 +1,10 @@
-# Práctica 02 - Morfología
+# Práctica 03 - POS-tagging 
 ## Presentación
 Usando el corpus en otomí de Mijangos, lo procesa, y entrena un modelo POS. Posteriormente, se reportan sus métricas.
 ## Instalación y ejecución
 1. Instalar los siguientes paquetes en el entorno de Python donde se vaya a ejecutar el programa
 	1. sklearn (Entrenamiento del modelo)
-	2. numpy (Permite descargar punkt)
+	2. numpy 
 	3. unidecode (Procesamiento del lenguaje)
 	4. rich (Visualización en terminal)
 
