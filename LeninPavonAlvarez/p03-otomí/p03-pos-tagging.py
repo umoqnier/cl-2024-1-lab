@@ -11,15 +11,55 @@ from nltk.corpus import cess_esp
 # Entrenamiento de modelos
 from sklearn_crfsuite import CRF
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import *
 # Análisis de resultados
+from sklearn.metrics import *
+import pandas as pd
+from json import loads
+# Reproducibilidad
+import numpy as np
+import random
 
-# TODO: Obtener corpus
-# TODO: Procesar corpus para hacerlo digerible sin pérdida de info
-# TODO: Definir features
-# TODO: word_to_features
-def word_to_features():
-    return
+def tone(word):
+    for vowel in ["aa","ee","ii","oo","uu"]:
+        if vowel in word:
+            # Ascending tone
+            return 1
+    for vowel in ["á","é","í","ó","ú"]:
+        if vowel in word:
+            # High tone
+            return 2
+    return 3
+def position_of_letter(chr,word):
+    try:
+        return word.index(chr)
+    except:
+        return -1
+
+def word_to_features(word):
+    """
+    Long de la palabra
+    Termina en vocal
+    tono
+        - ascendente con doble vocal
+        - tilde ´ tono alto
+        otrherwise bajo
+    Tiene glotal al inicio 
+    Tiene glotal al medio --- Composición de palabras
+    Tiene n o m --- Composición de palabras
+    Empieza en nu o gigo --- pronominales ye
+    -k,h,g,n + vocal --- terminaciones de verbo
+    Inicia en hín --- negación
+    """
+    features = {
+        'length':       len(word),
+        'tone':         tone(word),
+        'glotal_pos':   position_of_letter("'", word),
+        'm_pos':        position_of_letter("m", word),
+        'n_pos':        position_of_letter("n", word),
+        'hiacuten_pos': position_of_letter("hín", word),
+        'bi_pos':       position_of_letter("bi", word),
+    }
+    return features
 # Código de ayudantía
 def sent_to_features(sent):
     return [word_to_features(sent, i) for i in range(len(sent))]
@@ -27,13 +67,6 @@ def sent_to_features(sent):
 def sent_to_labels(sent):
     return [label for token, label in sent]
 
-# Arreglo de features
-# X = [[word_to_features(sent, i) for i in range(len(sent))] for sent in corpus]
-X=[]
-
-# Arreglo de etiquetas
-# y = [[map_tag(pos) for _, pos in sent] for sent in corpus]
-y=[]
 def report(true, predictions):
     report = classification_report(y_true=true, y_pred=predictions)
     print(accuracy_score(true, predictions))
@@ -68,4 +101,50 @@ def train_crf_model(features, labels, print_results = True):
         
 # CLI
 if __name__ == '__main__':
-    print("Sí jala")
+    corpus = {"word":[], "type":[], "pos": []}
+    file_location = "./corpus_otomi.dat"
+    with open(file_location) as file_object:
+        for line in file_object:
+            line = loads(line)
+            for idx, parts_of_word in enumerate(line):
+                corpus["type"].append(parts_of_word[-1].strip())
+                corpus["word"].append("".join([part[0].strip() for part in parts_of_word[0:-1]]))
+                # Beginning of sentence
+                corpus["pos"].append(idx+1)
+    df = pd.DataFrame.from_dict(corpus)
+    # TODO: Procesar corpus para hacerlo digerible sin pérdida de info
+    df["utf_word"] = df["word"].apply(lambda w: w.encode(encoding = 'UTF-8'))
+    df["features"] = df["word"].apply(lambda w: word_to_features(w))
+    
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.max_rows', None)
+    print(df.head())
+    
+    # Arreglo de features
+    print(df.features)
+    X=df.features.tolist()
+    # Arreglo de etiquetas
+    print(df.type)
+    y=df.type.tolist()
+    # Seed
+    random_seed = 42
+    np.random.seed(random_seed)
+    random.seed(random_seed)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_seed)
+    print(len(X_train))
+    print("---")
+    print("---")
+    print("---")
+    print(len(y_train))
+    crf = CRF(algorithm='lbfgs', c1=0.1, c2=0.1, max_iterations=100, all_possible_transitions=True, verbose=True)
+    try:
+        crf.fit(X_train, y_train)
+    except AttributeError as e:
+        print(e)
+    y_pred = crf.predict(X_test)
+
+    # Flatten the true and predicted labels
+    y_test_flat = [label for sent_labels in y_test for label in sent_labels]
+    y_pred_flat = [label for sent_labels in y_pred for label in sent_labels]
+    report(y_test_flat, y_pred_flat)
+    
