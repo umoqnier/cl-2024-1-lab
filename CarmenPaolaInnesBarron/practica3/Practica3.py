@@ -110,8 +110,7 @@ with warnings.catch_warnings():
     print("\n\n\n******* Ejemplo de oración etiquetada *******")
     sentence = X_test[0]
     string = " ".join([w['word.lower()'] for w in sentence])
-    print(f"Oración: {string}")
-    prediction = crf.predict(sentence)
-    print(prediction)
-    # print(f"Etiquetado obtenido: {}")
+    print(f"\nOración: {string}")
+    prediction = crf.predict([sentence])
+    print(f"\nEtiquetado obtenido: {', '.join(prediction[0])}")
     print(f"\nEtiquetado correcto: {', '.join(y_test[0])}")
