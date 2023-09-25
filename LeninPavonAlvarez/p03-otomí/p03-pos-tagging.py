@@ -3,11 +3,7 @@ Practica 03 <<Pos Tagging>>
 
 POS (Parts of Speech) en HÑÄHÑU (Otomí)
 """
-# Paquetería
-from inspect import Attribute
-# NLP
-import nltk 
-from nltk.corpus import cess_esp
+
 # Entrenamiento de modelos
 from sklearn_crfsuite import CRF
 from sklearn.model_selection import train_test_split
@@ -128,7 +124,7 @@ if __name__ == '__main__':
     random.seed(random_seed)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=random_seed)
 
-    crf = CRF(algorithm='lbfgs', c1=0.1, c2=0.1, max_iterations=100, all_possible_transitions=True, verbose=True)
+    crf = CRF(algorithm='lbfgs', c1=0.1, c2=0.1, max_iterations=1000, all_possible_transitions=True, verbose=True)
     try:
         crf.fit(X_train, y_train)
     except AttributeError as e:
