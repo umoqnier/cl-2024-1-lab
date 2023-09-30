@@ -5,6 +5,10 @@ plt.rcParams['figure.figsize'] = [15, 6]
 from re import sub
 import numpy as np
 from elotl import corpus as elotl_corpus
+import nltk
+from nltk.corpus import brown, cess_esp
+# nltk.download("cess_esp")
+
 # Código de ayudantía
 # def preprocess_corpus(corpus):
 #     # Obtener la oración de L1,
@@ -37,8 +41,8 @@ def extract_chars_from_sentence(sentence, spaces=False, numbers = False):
 
 def chars_from_corpus(corpus, spaces=False, numbers = False) -> dict:
     chars = {}
-    for sentence in corpus:
-        chars = sum_dicts(sentence, chars)
+    for word in corpus:
+        chars = sum_dicts(Counter(word.lower()), chars)
     return chars
 
 # Función modificada de ayudantía
@@ -55,27 +59,66 @@ def preprocess_corpus(corpus):
     # obtiene la una cuenta de caracteres
         char_dict_l2 = sum_dicts(extract_chars_from_sentence(row[0]), char_dict_l2)
     return char_dict_l1, char_dict_l2
+"""
+Parte 1
+"""
+def get_frequencies(vocabulary: Counter, n: int = 1) -> list:
+    return [_[1] for _ in vocabulary.most_common(n)]
 
-# Importar corpus de nahúatl, otomí y español
-axolotl = elotl_corpus.load("axolotl")
-tsunkua = elotl_corpus.load("tsunkua")
-# Pre procesamiento de corpus
-spanish_char_na, nahuatl_char = preprocess_corpus(axolotl)
-spanish_char_oto, otomi_char = preprocess_corpus(tsunkua)
-D = sort_dict(nahuatl_char)
-plt.plot(range(len(D)), list(D.values()))
-plt.xticks(range(len(D)), list(D.keys()))
+def get_frequencies_dict(vocabulary: dict, n: int = 1) -> list:
+    freqs = []
+    for idx, value in enumerate(vocabulary):
+        if idx >= n:
+            break
+        freqs.append([value, vocabulary[value]])
+    return freqs
+
+def def_value():
+    return 0
+
+def process_tag_corpus(corpus):
+    chars = defaultdict(def_value)
+    for word, tag in corpus:
+        chars[tag] += 1
+    return chars
+
+def plot_corpus_tag(tags, show = False, with_labels = False):
+    x = []
+    y = []
+    for t in tags:
+        x.append(t[0])
+        y.append(t[1])
+    if not with_labels:
+        x = [i for i in range(1,len(y)+1)]
+    if show:
+        plt.plot(x,y)
+        plt.show()
+    return x,y
+n=100  
+
+brown_char = sort_dict(process_tag_corpus(brown.tagged_words()))
+cess_esp_char = sort_dict(process_tag_corpus(cess_esp.tagged_words()))
+tags_brown = get_frequencies_dict(brown_char,n)
+tags_cess_esp = get_frequencies_dict(cess_esp_char,n)
+brown_x, brown_y = plot_corpus_tag(tags_brown)
+cess_esp_x, cess_esp_y = plot_corpus_tag(tags_cess_esp)
+plt.plot(brown_x, brown_y)
+plt.plot(cess_esp_x, cess_esp_y)
 plt.show()
-# def extract_words_from_sentence(sentence: str) -> list:
-#     return sub(r'[^\w\s\']', ' ', sentence).lower().split()
+"""
+Parte 2
+"""
+# # Importar corpus de nahúatl, otomí y español
+# axolotl = elotl_corpus.load("axolotl")
+# tsunkua = elotl_corpus.load("tsunkua")
+# # Pre procesamiento de corpus
+# spanish_char_na, nahuatl_char = preprocess_corpus(axolotl)
+# spanish_char_oto, otomi_char = preprocess_corpus(tsunkua)
+# D = sort_dict(nahuatl_char)
+# plt.plot(range(len(D)), list(D.values()))
+# plt.xticks(range(len(D)), list(D.keys()))
+# plt.show()
 
-# spanish_words_na, nahuatl_words = preprocess_corpus(axolotl)
-# spanish_words_oto, otomi_words = preprocess_corpus(tsunkua)
-
-# nahuatl_vocabulary = Counter(nahuatl_words)
-# nahuatl_es_vocabulary = Counter(spanish_words_na)
-# otomi_vocabulary = Counter(otomi_words)
-# otomi_es_vocabulary = Counter(spanish_words_oto)
 
 # Importar n-gramas de caracteres n=2
 # Respuestas stopwords coinciden con las paabras más comunes en Zipf?
