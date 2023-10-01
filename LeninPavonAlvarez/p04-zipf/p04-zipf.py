@@ -7,26 +7,17 @@ import numpy as np
 from elotl import corpus as elotl_corpus
 import nltk
 from nltk.corpus import brown, cess_esp,stopwords
+from rich import print
 from rich.console import Console
 from rich.table import Table
 from rich.style import Style
+from rich.layout import Layout
+from rich.panel import Panel
+from rich.text import Text
 # nltk.download("cess_esp")
 
-# Código de ayudantía
-# def preprocess_corpus(corpus):
-#     # Obtener la oración de L1,
-#     # quitar signos de puntuación y
-#     # obtiene la lista de palabras
-#     word_list_l1 = []
-#     word_list_l2 = []
-#     for row in corpus:
-#         word_list_l1.extend(extract_words_from_sentence(row[0]))
-#     # Obtener la oración de L1,
-#     # quitar signos de puntuación y
-#     # obtiene la lista de palabras
-#         word_list_l2.extend(extract_words_from_sentence(row[1]))
-#     return word_list_l1, word_list_l2
-
+console = Console()
+layout = Layout()
 
 
 def sum_dicts(dic1: dict, dic2: dict) -> dict:
@@ -114,34 +105,70 @@ def preprocess_corpus_words(corpus):
     # obtiene la lista de palabras
         word_list_l2.extend(extract_words_from_sentence(row[1]))
     return word_list_l1, word_list_l2
-# n=100  
 
-# brown_char = sort_dict(process_tag_corpus(brown.tagged_words()))
-# cess_esp_char = sort_dict(process_tag_corpus(cess_esp.tagged_words()))
-# tags_brown = get_frequencies_dict(brown_char,n)
-# tags_cess_esp = get_frequencies_dict(cess_esp_char,n)
-# brown_x, brown_y = plot_corpus_tag(tags_brown)
-# cess_esp_x, cess_esp_y = plot_corpus_tag(tags_cess_esp)
-# plt.plot(brown_x, brown_y)
-# plt.plot(cess_esp_x, cess_esp_y)
-# plt.show()
+texto_presentación = """Práctica 4. Zipf
+Lenin Pavón Alvarez"""
+print(Panel(Text(texto_presentación,style="bold magenta",justify="center"), border_style="magenta"))
+print(Panel(Text("Parte 1: POS",style="bold cyan",justify="center"), border_style="cyan"))
+texto_p1 = "Vamos a procesar el corpus [bold][red]brown[/red][/bold] y [bold][red]cess_esp[/red][/bold] donde veremos que las etiquetas POS siguen la distribución Zipf."
+print(texto_p1)
+
+n=100  
+print("Procesando el corpus [bold red]brown[/bold red]")
+brown_char = sort_dict(process_tag_corpus(brown.tagged_words()))
+print("Obteniendo las palabras más frecuentes de [bold red]brown[/bold red]")
+tags_brown = get_frequencies_dict(brown_char,n)
+print("Procesando [bold red]brown[/bold red] para su visualización")
+brown_x, brown_y = plot_corpus_tag(tags_brown)
+print("[bold red]brown[/bold red] procesado")
+
+print("Procesando el corpus [bold red]cess_esp[/bold red]")
+cess_esp_char = sort_dict(process_tag_corpus(cess_esp.tagged_words()))
+print("Obteniendo las palabras más frecuentes del corpus [bold red]cess_esp[/bold red]")
+tags_cess_esp = get_frequencies_dict(cess_esp_char,n)
+print("Procesando [bold red]cess_esp[/bold red] para su visualización")
+cess_esp_x, cess_esp_y = plot_corpus_tag(tags_cess_esp)
+print("[bold red]cess_esp[/bold red] procesado")
+plt.plot(brown_x, brown_y)
+plt.plot(cess_esp_x, cess_esp_y)
+plt.show()
 """
 Parte 2
 """
+print(Panel(Text("Parte 2: Caracteres",style="bold cyan",justify="center"), border_style="cyan"))
+texto_p2 = "Habiendo procesado las etiquetas POS " + \
+    "vamos a analizar la distribución de caracteres " + \
+    "en náhuatl ([bold red]axolotl[/bold red]) " + \
+    "en otomí ([bold red]tsunkua[/bold red]) " +\
+    "y sus respectivos corpora paralelos en español."
+print(texto_p2)
 # # Importar corpus de nahúatl, otomí y español
+print("Importando [bold red]axolotl[/bold red]")
 axolotl = elotl_corpus.load("axolotl")
+print("Procesando [bold red]axolotl[/bold red]")
+spanish_char_na, nahuatl_char = preprocess_corpus(axolotl)
+print("Importando [bold red]tsunkua[/bold red]")
 tsunkua = elotl_corpus.load("tsunkua")
-# # Pre procesamiento de corpus
-# spanish_char_na, nahuatl_char = preprocess_corpus(axolotl)
-# spanish_char_oto, otomi_char = preprocess_corpus(tsunkua)
-# D = sort_dict(nahuatl_char)
-# plt.plot(range(len(D)), list(D.values()))
-# plt.xticks(range(len(D)), list(D.keys()))
-# plt.show()
+# Pre procesamiento de corpus
+print("Procesando [bold red]tsunkua[/bold red]")
+spanish_char_oto, otomi_char = preprocess_corpus(tsunkua)
+print("Graficando...")
+for corp in [nahuatl_char,otomi_char,spanish_char_na,spanish_char_oto]:
+    D = sort_dict(corp)
+    plt.plot(range(len(D)), list(D.values()))
+    plt.xticks(range(len(D)), list(D.keys()))
+plt.show()
 """
 Parte 3
 """
+print(Panel(Text("Parte 3: Caracteres",style="bold cyan",justify="center"), border_style="cyan"))
+texto_p3 = "Habiendo procesado los caracteres " + \
+    "vamos a analizar la distribución de 2-gramas sobre " + \
+    "los mismos corpora."
+print(texto_p3)
+print("Pre-rocesando [bold red]axolotl[/bold red]")
 spanish_words_na, nahuatl_words = preprocess_corpus_words(axolotl)
+print("Pre-Procesando [bold red]tsunkua[/bold red]")
 spanish_words_oto, otomi_words = preprocess_corpus_words(tsunkua)
 
 def get_ngram(corpus,n=2)->list:
@@ -166,22 +193,37 @@ def plot_frequencies(frequencies: list, title="Freq of words"):
     plt.title(title)
 
 
-# most_common_count = 100
-# nahuatl_ngram = Counter(get_ngram(nahuatl_words))
-# nahuatl_ngram_freqs = get_frequencies(nahuatl_ngram, most_common_count)
-# plot_frequencies(nahuatl_ngram_freqs, f"Frequencies for Nahúatl {most_common_count} most common")
-# plt.show()
+most_common_count = 100
+corp_title = ["axolotl español", "axolotl","tsunkua español", "tsunkua"]
+for id,corp in enumerate([spanish_words_na, nahuatl_words,spanish_words_oto, otomi_words]):
+    print(f"Creando 2-gramas de [bold red]{corp_title[id]}[/bold red]")
+    ngram = Counter(get_ngram(nahuatl_words))
+    print(f"Contando 2-gramas de [bold red]{corp_title[id]}[/bold red]")
+    ngram_freqs = get_frequencies(ngram, most_common_count)
+    plot_frequencies(ngram_freqs, f"Frequencies for {most_common_count} most common 2-grams")
+plt.show()
 """
 Parte 4
 
 Stopwords
 """
+print(Panel(Text("Parte 4: Caracteres",style="bold cyan",justify="center"), border_style="cyan"))
+texto_p4 = "Habiendo procesado los 2-gramas " + \
+    "vamos a analizar si las palabras " + \
+    "más comunes (en español) de " +\
+    "[bold red]axolotl[/bold red] y "+\
+    "[bold red]tsunkua[/bold red] coinciden"+\
+    "con las [bold red]stopwords[/bold red] de "+\
+    "[cyan]nltk[cyan]."
+print(texto_p4)
 # Palabras más comunes
 # nahuatl_vocabulary = Counter(nahuatl_words)
+print("Contando palabras en [bold red]axolotl[/bold red]")
 nahuatl_es_vocabulary = Counter(spanish_words_na)
 # otomi_vocabulary = Counter(otomi_words)
+print("Contando palabras en [bold red]tsunkua[/bold red]")
 otomi_es_vocabulary = Counter(spanish_words_oto)
-
+print("Visualizando...\n")
 table = Table(title = "Stopwords")
 table.add_column("Corpus", style ="cyan")
 table.add_column("Palabra", style="magenta")
