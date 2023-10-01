@@ -6,7 +6,10 @@ from re import sub
 import numpy as np
 from elotl import corpus as elotl_corpus
 import nltk
-from nltk.corpus import brown, cess_esp
+from nltk.corpus import brown, cess_esp,stopwords
+from rich.console import Console
+from rich.table import Table
+from rich.style import Style
 # nltk.download("cess_esp")
 
 # Código de ayudantía
@@ -163,12 +166,40 @@ def plot_frequencies(frequencies: list, title="Freq of words"):
     plt.title(title)
 
 
-most_common_count = 100
-nahuatl_ngram = Counter(get_ngram(nahuatl_words))
-nahuatl_ngram_freqs = get_frequencies(nahuatl_ngram, most_common_count)
-plot_frequencies(nahuatl_ngram_freqs, f"Frequencies for Nahúatl {most_common_count} most common")
-plt.show()
-# Importar n-gramas de caracteres n=2
+# most_common_count = 100
+# nahuatl_ngram = Counter(get_ngram(nahuatl_words))
+# nahuatl_ngram_freqs = get_frequencies(nahuatl_ngram, most_common_count)
+# plot_frequencies(nahuatl_ngram_freqs, f"Frequencies for Nahúatl {most_common_count} most common")
+# plt.show()
+"""
+Parte 4
+
+Stopwords
+"""
+# Palabras más comunes
+# nahuatl_vocabulary = Counter(nahuatl_words)
+nahuatl_es_vocabulary = Counter(spanish_words_na)
+# otomi_vocabulary = Counter(otomi_words)
+otomi_es_vocabulary = Counter(spanish_words_oto)
+
+table = Table(title = "Stopwords")
+table.add_column("Corpus", style ="cyan")
+table.add_column("Palabra", style="magenta")
+table.add_column("Stopword", style="green")
+placeholders = stopwords.words()
+corpus = ["nahuatl", "otomí"]
+i = 0
+for vocabulary in [nahuatl_es_vocabulary,otomi_es_vocabulary]:
+    for word in vocabulary.most_common(25):
+        stpwrd = "Sí" if word[0] in placeholders else "No"
+        table.add_row(
+            corpus[i],
+            word[0],
+            stpwrd
+            )
+    i += 1
+console = Console()
+console.print(table)
 # Respuestas stopwords coinciden con las paabras más comunes en Zipf?
 # Realizar nube de palabras sans stopwords et palabras de zipf
 
