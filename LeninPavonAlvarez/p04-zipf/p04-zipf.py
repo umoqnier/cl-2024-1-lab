@@ -14,6 +14,7 @@ from rich.style import Style
 from rich.layout import Layout
 from rich.panel import Panel
 from rich.text import Text
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 # nltk.download("cess_esp")
 
 console = Console()
@@ -338,8 +339,9 @@ table.add_column("Stopword", style="green")
 placeholders = stopwords.words()
 corpus = ["nahuatl", "otomí"]
 i = 0
+n=50
 for vocabulary in [nahuatl_es_vocabulary,otomi_es_vocabulary]:
-    for word in vocabulary.most_common(25):
+    for word in vocabulary.most_common(n):
         stpwrd = "Sí" if word[0] in placeholders else "No"
         table.add_row(
             corpus[i],
@@ -347,9 +349,42 @@ for vocabulary in [nahuatl_es_vocabulary,otomi_es_vocabulary]:
             stpwrd
             )
     i += 1
-console = Console()
+# console = Console()
 console.print(table)
+
+print("Ahora sumemos la frecuencia de las palabras en ambos corpus\n")
+esp_vocabulary = sort_dict(sum_dicts(nahuatl_es_vocabulary,otomi_es_vocabulary))
+
+table = Table(title = "Stopwords")
+table.add_column("Palabra", style="magenta")
+table.add_column("Stopword", style="green")
+placeholders_alt = []
+for idx,word in enumerate(esp_vocabulary.keys()):
+    if idx >= n:
+        break
+    stpwrd = "Sí" if word in placeholders else "No"
+    placeholders_alt.append(word)
+    table.add_row(
+        word,
+        stpwrd
+        )
+console.print(table)
+print("Graficando las nubes de palabras usando [bold red]stopwords[/bold red]\n")
+
 # Realizar nube de palabras sans stopwords et palabras de zipf
+
+wordcloud_stopwords = WordCloud(width = 1000, height = 500).generate_from_frequencies({key:val for key,val in esp_vocabulary.items() if key not in placeholders})
+wordcloud_stopwords_alt = WordCloud(width = 1000, height = 500).generate_from_frequencies({key:val for key,val in esp_vocabulary.items() if key not in placeholders_alt})
+
+fig, axs = plt.subplots(2,figsize=(15,8))
+fig.suptitle('Parte 4. Nubes de palabras')
+axs[0].imshow(wordcloud_stopwords)
+axs[0].set_title('Stopwords de nltk')
+axs[0].set_axis_off()
+axs[0].set_title('Stopwords de Zipf')
+axs[1].imshow(wordcloud_stopwords_alt)
+axs[1].set_axis_off()
+plt.show()
 
 # Lenguaje aleatorio con distribuciones Poisson, Uniforme Normal con media en cero, bi/tri normal, log normal, Zipf, 
 # Usemos enlace egalitario para generar un nodo de tipo "letra" y cada rama es una palabra
