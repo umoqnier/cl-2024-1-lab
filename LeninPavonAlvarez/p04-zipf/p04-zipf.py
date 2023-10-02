@@ -243,7 +243,7 @@ if __name__ == '__main__':
         "vamos a analizar la distribución de caracteres " + \
         "en náhuatl ([bold red]axolotl[/bold red]) " + \
         "en otomí ([bold red]tsunkua[/bold red]) " +\
-        "y sus respectivos corpora paralelos en español."
+        "y sus respectivos corpus paralelos en español."
     print(texto_p2)
 
 
@@ -313,7 +313,7 @@ if __name__ == '__main__':
     print(Panel(Text("Parte 3: 2-gramas",style="bold cyan",justify="center"), border_style="cyan"))
     texto_p3 = "Habiendo procesado los caracteres " + \
         "vamos a analizar la distribución de 2-gramas sobre " + \
-        "los mismos corpora."
+        "los mismos corpus."
     print(texto_p3)
 
 
@@ -487,7 +487,7 @@ if __name__ == '__main__':
 
     # Posición de la letra del alfabeto más común
     k = choice(range(l_abc))
-    # Cantidad de iteraciones
+    # Cantidad de palabras
     n = 500_000
     # Las k palabras más comunes
     most_common_count = 150
@@ -506,7 +506,6 @@ if __name__ == '__main__':
     chars_uniforme = [choice(alfabeto) for _ in range(total)]
     corpus_uniforme = chars_to_corpus_of_words(chars_uniforme,sizes)
     freqs_uniforme = Counter(corpus_uniforme)
-    print(freqs_uniforme)
     plot_uniforme = get_frequencies(freqs_uniforme, most_common_count)
 
     axs[0].plot(range(len(plot_uniforme)), plot_uniforme,'tab:purple')
@@ -553,4 +552,4 @@ if __name__ == '__main__':
     print("Graficando...")
     plt.subplots_adjust(hspace=1)
     plt.show()
-
+    print("Fin [magenta]uwu")
