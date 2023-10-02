@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1Z1Sa3F6IO5xc3xBDzJ6npd97lwY0DZBh
 """
 
-pip install elotl
-
 # Libraries
 from collections import Counter
 import matplotlib.pyplot as plt
@@ -109,7 +107,7 @@ plot_frequencies(POS_eng_freqs, f"Frequencies for POS English {most_common_count
 
 print("Comprobaremos si se cumple la Ley de Zipf")
 
-a = 1.18
+a = 1.8
 N = 1000
 zipf_distribution = np.random.zipf(a, N)
 zipf_numbers_freqs = get_frequencies(Counter(zipf_distribution), 11)
@@ -185,10 +183,6 @@ print("Por lo que muestra el gráfico anterior, tampoco parece que los caractere
 
 print("Ahora encontremos las frecuencias para n-gramas, correspondientes a los lenguajes anteriores.")
 print("Consideremos n = 2.")
-
-words = extract_words_from_sentence(join1)
-  join2 = "".join(words)
-  characters = list(join2)
 
 from nltk.util import ngrams
 
