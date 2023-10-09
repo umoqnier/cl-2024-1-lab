@@ -81,13 +81,13 @@ def extract_morpho_info(sentence, nlp, stemmer):
 # obtenemos el corpus con las oraciones (la data)
 files = get_files('eng', 'sentence')
 corpus = get_raw_corpus(files=files)
-total_sentences = 1
+total_sentences = 10
 index = random.sample(range(0, len(corpus)), total_sentences) # obtener los índices de 10 oraciones aleatorias
 
 # declaramos el modelo de spacy para inglés
 nlp_en = spacy.load(MODELS["eng"])
 
-cont = 10
+cont = 1
 ps = PorterStemmer()
 
 for i in index:
