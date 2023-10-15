@@ -1,0 +1,30 @@
+De acuerdo a los resultados obtenidos, podemos notar que, para ambos corpus:
+
+- Los textos tokenizados tienen mayor entropía que aquellos sin tokenizar.
+- Los textos tokenizados parecen tener una entropía similar 
+  (quizá porque usamos el mismo número de merge operations). 
+- Los textos sin tokenizar también tienen una entropía similar (que puede
+  deberse a que usamos los mismos símbolos para representar las palabras 
+  de ambos idiomas).
+
+Tomando en cuenta lo anterior, podemos decir que la entropía se relaciona 
+con la cantidad de símbolos que usamos para representar un idioma (pues 
+recordemos que las merge operations 'añaden' nuevos símbolos a nuestro alfabeto).
+
+Por otra parte, podemos interpretar la entropía como una medida de qué tantos 
+tipos encontramos en nuestro corpus y cómo éstos se distribuyen a lo largo del 
+documento. 
+
+Si restringimos los  tipos a los símbolos de nuestro alfabeto, no podremos 
+ver mas que la distribución esos símbolos a lo largo de nuestro corpus. Entonces
+la entropía nos estaría diciendo nuestra capacidad de predecir el siguiente símbolo
+dada una cadena arbitraria del corpus. Dado que sólo estamos considerando símbolos,
+esto es relativamente sencillo porque la probabilidad de cada caracter aumenta. 
+
+En contraparte, si consideramos más tipos (que podemos añadir mediante merge 
+operations), habrá una mayor "variabilidad" de símbolos a lo largo del corpus.
+Luego, dada una cadena arbitraria, intentaríamos predecir qué subcadena le sigue
+a otra. No obstante, al haber añadido más tipos, las probabilidades individuales 
+decrecen. Así, predecir se vuelve más difícil y decimos que la entropía del texto
+aumentó.  
+
