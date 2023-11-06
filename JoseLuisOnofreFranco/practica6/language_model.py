@@ -2,6 +2,7 @@ from sklearn.model_selection import train_test_split
 from collections import defaultdict, Counter
 import numpy as np
 from itertools import chain
+import math
 
 # Symbols that are used to identify which words
 # are used the most at the beginning or end of a
@@ -70,7 +71,7 @@ def get_model(sents: list[list[str]], vocabulary: defaultdict, n: int = 2, l: fl
         where for each word (the key), is stored an id
 
     n: int
-        the number of grams to make
+        n-grams
 
     l: float
         for smoothing
@@ -95,11 +96,11 @@ def get_model(sents: list[list[str]], vocabulary: defaultdict, n: int = 2, l: fl
 
     # Changed from numpy array to dict to avoid memory usage
     # Might be probability of some collisions
-    A = {}
+    dist = {}
 
     for n_gram, frec in freq_n_grams.items():
         if n_gram[0] != vocabulary[BOS]:
-           A[n_gram] = frec
+           dist[n_gram] = frec
            pass
         elif n_gram[0] == vocabulary[BOS] and n_gram[1] != vocabulary[EOS]:
           Pi[n_gram[1]] = frec
@@ -107,13 +108,65 @@ def get_model(sents: list[list[str]], vocabulary: defaultdict, n: int = 2, l: fl
     def probablity(n_gram):
         m_gram = n_gram[:-1]
         m_count = freq_m_grams[m_gram]
-        n_count = A[n_gram]
+        n_count = dist[n_gram]
 
         return (n_count + l) / (m_count + l * N)
 
     # Calculating initial probabilities
     Pi = (Pi+l)/(Pi+l).sum(0)
-    result = { n_gram: probablity(n_gram) for n_gram, _ in A.items() }
+    A = { n_gram: probablity(n_gram) for n_gram, _ in dist.items() }
 
     # We get our model
-    return result, Pi
+    return A, Pi
+
+def sentence_to_indices(sentece: list[str], vocab: dict):
+    """Maps each word of the given sentence into its index
+    found in vocab. If the word is not found, it maps to -1
+    """
+    
+    words = [BOS] + sentece + [EOS]
+    indices = []
+    for word in words:
+        if word in vocab:
+            indices.append(vocab[word])
+        else:
+            indices.append(-1)
+
+    return indices
+
+def perplexity(sentence: str, n: int, model: tuple, vocab: dict):
+    """Calculates log perplexity for a given word, using
+    a n-gram model
+    
+    Parameters:
+    -----------
+    sentence: str
+        a sentence already preprocessed
+    
+    model: tuple
+        the probability distribution for the n-grams and the initial
+        probabilities
+
+    n: int
+        n-grams
+
+    vocab: dict
+        where for each word (the key), is stored an id
+    """
+    A, Pi = model
+    indices = sentence_to_indices(sentence, vocab)
+    n_grams = list(zip(*[indices[i:] for i in range(n)]))
+    probabilities = []
+
+    first_word = n_grams[0][1]
+    if first_word in A:
+        probabilities.append(Pi[first_word])
+
+    for n_gram in n_grams:
+        if n_gram in A:
+            probabilities.append(math.log(A[n_gram]))
+    
+    N = len(indices)
+    log_perplexity = -1 // N * sum(probabilities)
+
+    return log_perplexity
