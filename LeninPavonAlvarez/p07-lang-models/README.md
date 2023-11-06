@@ -2,6 +2,10 @@
 ## Presentación
 Usando el corpus *Don Quijote* del proyecto Gutenberg se crean modelos de bigramas y trigramas que se evalúan con perplejidad.
 
+
+Como se ve en el capítulo 3 del Jurafsky, mientras que el estándar para evaluar modelos de lenduaje es a través de una evaluación extrìnseca que muestra sus capacidades in vivo, es más sencillo llevar a cabo una evaluación intrínseca del modelo. Mas, la probabilidad de una cadena por sí misma no nos brinda tanta información. 
+
+La perplejidad es una medida enriquecida de la probabilidad de una cadena W. Si W tiene longitud n, la perplejidad de W con respecto a un modelo con cierto vocabulario es la raíz n-ésima del inverso de la probabilidad conjunta de cada w\_i de W en el modelo. Si el programa se queda _perplejo_ ante la nueva cadena, esta va a tener su baja probabilidad. En consecuencia la perplejidad va a crecer, pero se normaliza con la raíz n-ésima. Para evaluar al modelo, calcularemos la probabilidad conjunta del conjunto de prueba
 ## Instalación y ejecución
 1. Se requiere instalar los siguientes paquetes y dependencias en el entorno de Python donde se vaya a ejecutar el programa. 
 	1. numpy
