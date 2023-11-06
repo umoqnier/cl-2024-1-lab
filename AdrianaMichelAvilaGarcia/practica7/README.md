@@ -7,9 +7,6 @@ Para correr el notebook necesitas tener instalado:
 - numpy
 - pip (instala subword-nmt)
 
-Para correr el script:
-- nltl
-- subword-nmt
 
 Se incluye el notebook creado. No incluí un script porque no salía usar subword-nmt sin el notebook.
 Para ver detalles acerca de los modelos, el preprocesamiento y todo, puedes ver el notebook.
