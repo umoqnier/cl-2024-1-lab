@@ -46,6 +46,8 @@ if __name__ == '__main__':
     ax[0].set_ylabel('Componente principal - 2')
     x = [v[0] for v in vecs_pca]
     y = [v[1] for v in vecs_pca]
+    for i, txt in enumerate(palabras):
+        ax[0].annotate(txt,(x[i],y[i]))
     ax[0].scatter(x, y)
     
     print("t-Distributed Stochastic Neighbor Embedding (T-SNE)")
@@ -57,7 +59,10 @@ if __name__ == '__main__':
     ax[1].set_ylabel('Eje y')
     x = [v[0] for v in vecs_tsne]
     y = [v[1] for v in vecs_tsne]
+    for i, txt in enumerate(palabras):
+        ax[1].annotate(txt,(x[i],y[i]))
     ax[1].scatter(x, y)
+    
     print("Singular Value Descomposition (SVD)")
     svd = TruncatedSVD(n_components=2)
     vecs_svd = svd.fit_transform(vecs)
@@ -68,7 +73,5 @@ if __name__ == '__main__':
     y = [v[1] for v in vecs_svd]
     ax[2].scatter(x, y)
     for i, txt in enumerate(palabras):
-        ax[0].annotate(txt,(x[i],y[i]))
-        ax[1].annotate(txt,(x[i],y[i]))
         ax[2].annotate(txt,(x[i],y[i]))
     plt.show()
