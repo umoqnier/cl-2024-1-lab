@@ -9,4 +9,7 @@ Y además
 
 ## Resultados
 
-Al haber un problema con el subwording el puntaje de BLEU preliminar es de 0.01 *llora en reprobado*
+Hubo un problema en el entrenamiento muy feo, pido perdón
+| Métrica | Valor |
+|---|---|
+|BLEU|0.05040979318218263|
