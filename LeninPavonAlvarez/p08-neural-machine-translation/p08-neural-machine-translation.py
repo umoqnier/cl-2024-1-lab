@@ -25,6 +25,10 @@ def get_corpora(l1: str="nah", l2: str="es", tipos:list = ['train', 'dev', 'test
                 make_file(f"{tipo}.{lang}",r.text)
             except:
                 pass
+    # Obteniendo test.nah
+    file_name = f"https://raw.githubusercontent.com/AmericasNLP/americasnlp2021/main/test_data/test.nah"
+    r = requests.get(file_name)
+    make_file(f"test.nah",r.text,mode="w")
     return True
 
 # Código del otro wey que no es el ayudante pero que lo separa raro 
