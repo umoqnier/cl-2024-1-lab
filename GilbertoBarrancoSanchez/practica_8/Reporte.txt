@@ -1,0 +1,20 @@
+Para nuestro modelo de traducción Español-Náhuatl se obtuvieron las siguientes métricas:
+	- BLEU: 8.23
+	- chrF2: 29.88
+
+Por otro lado, de acuerdo a Baseline Results (Náhuatl), se habían obtenido los valores:
+	- BLEU: 0.33
+	- ChrF(0-1): 0.182
+
+Entonces notamos que hemos obtenido valores más altos para ambas métricas de evaluación. 
+
+EXTRA:
+
+-Investigar porque se propuso la medida ChrF en el Shared Task. 
+
+    -¿Como se diferencia de BLEU?
+	En el caso de BLEU, éste observa el número de n-gramas que coinciden entre un texto traducido y la referencia original. Lo anterior tiene la desventaja de no considerar sinónimos o variaciones morfológicas, por lo que una oración bien traducida podría tener un BLEU bajo y una mal traducida pero con mucha precisión, podría tener BLEU alto.
+	Por otra parte, ChrF sí toma en cuenta qué tan similares son las palabras entre la traducción de un texto y su versión original, pues se vale de una especie de F1-score. Lo anterior garantiza una comparación de semántica entre las palabras. 
+    -¿Porqué es reelevante utilizar otras medidas de evaluación además de BLEU? Es importante para enriquecer la evaluación del modelo. Hay propuestas de BLEU que ayudan a aminorar las desventajas que tiene, pero otras medidas como ChrF captan mejor fenómenos morfológicos y semánticos de una lengua. 
+
+Por lo anterior, no pude encontrar en el repositorio la razón de haber propuesto a ChrF como medida de evaluación en el Shared Task, pero supongo que fue, en buena medida, porque las lenguas como el Náhuatl tienen gran riqueza morfológica (ya que el Náhuatl es una lengua aglutinante). Entonces, una medida que capture mejor estos fenómenos es ChrF. 
